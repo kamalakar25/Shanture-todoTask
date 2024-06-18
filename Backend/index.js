@@ -36,7 +36,7 @@ app.post('/tasks', (req, res) => {
         }
         res.json({ id: this.lastID });
     });
-}); 
+});
 
 // Delete a task
 app.delete('/tasks/:id', (req, res) => {
@@ -47,6 +47,19 @@ app.delete('/tasks/:id', (req, res) => {
             return;
         }
         res.json({ deleted: this.changes });
+    });
+});
+
+// Update task completion status
+app.put('/tasks/:id', (req, res) => {
+    const { id } = req.params;
+    const { completed } = req.body;
+    db.run(`UPDATE tasks SET completed = ? WHERE id = ?`, [completed, id], function(err) {
+        if (err) {
+            res.status(400).json({ error: err.message });
+            return;
+        }
+        res.json({ updated: this.changes });
     });
 });
 
